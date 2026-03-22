@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melhore sua Escrita</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✍️</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f3ef;
+    --surface: #ffffff;
+    --border: #e0dbd2;
+    --gold: #1a6bb5;
+    --gold-light: #2180d4;
+    --text: #1a1714;
+    --muted: #8a8070;
+    --result-bg: #faf8f4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    color: var(--gold-light);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-top: 8px;
+    font-weight: 300;
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 16px auto 0;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 720px;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    padding: 16px;
+    resize: vertical;
+    min-height: 160px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus {
+    border-color: var(--gold);
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .option {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .option:hover { border-color: var(--gold); color: var(--text); }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: rgba(201, 168, 76, 0.08);
+    color: var(--gold-light);
+  }
+
+  .option .icon { font-size: 1.1rem; }
+
+  button#run {
+    width: 100%;
+    max-width: 720px;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+
+  button#run:hover { opacity: 0.9; transform: translateY(-1px); }
+  button#run:active { transform: translateY(0); }
+  button#run:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .result-card {
+    background: var(--result-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    width: 100%;
+    max-width: 720px;
+    margin-top: 20px;
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .result-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  #result-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+  }
+
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .dots span {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  @media (max-width: 500px) {
+    .options-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Melhore sua Escrita</h1>
+  <p>Cole seu texto, escolha o estilo e receba uma versão aprimorada</p>
+  <div class="divider"></div>
+</header>
+
+<div class="card">
+  <label>Seu texto</label>
+  <textarea id="input-text" placeholder="Cole aqui o texto que você quer melhorar..."></textarea>
+</div>
+
+<div class="card">
+  <label>Tipo de melhoria</label>
+  <div class="options-grid">
+    <div class="option selected" data-value="gramatica" onclick="escolher(this)">
+      <span class="icon">✏️</span> Corrigir gramática e ortografia
+    </div>
+    <div class="option" data-value="formal" onclick="escolher(this)">
+      <span class="icon">💼</span> Deixar mais formal
+    </div>
+    <div class="option" data-value="informal" onclick="escolher(this)">
+      <span class="icon">💬</span> Deixar mais informal
+    </div>
+    <div class="option" data-value="claro" onclick="escolher(this)">
+      <span class="icon">🎯</span> Deixar mais claro e objetivo
+    </div>
+  </div>
+</div>
+
+<button id="run" onclick="improve()">Melhorar texto</button>
+
+<div class="result-card" id="result-card">
+  <div class="result-header">
+    <span class="result-label">Resultado</span>
+    <button class="copy-btn" onclick="copy()">Copiar</button>
+  </div>
+  <div id="result-text"></div>
+</div>
+
+<script>
+  const prompts = {
+    gramatica: "Corrija todos os erros de gramática, ortografia e pontuação do texto abaixo. Mantenha o estilo e conteúdo original. Retorne apenas o texto corrigido, sem explicações.",
+    formal: "Reescreva o texto abaixo em um tom mais formal e profissional, adequado para ambiente corporativo ou acadêmico. Retorne apenas o texto reescrito.",
+    informal: "Reescreva o texto abaixo em um tom mais informal, natural e descontraído, como numa conversa entre amigos. Retorne apenas o texto reescrito.",
+    claro: "Reescreva o texto abaixo tornando-o mais claro, direto e objetivo. Elimine redundâncias e torne cada frase mais precisa. Retorne apenas o texto reescrito."
+  };
+
+  let selected = "gramatica";
+
+  function escolher(el) {
+    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selected = el.dataset.value;
+  }
+
+  async function improve() {
+    const text = document.getElementById('input-text').value.trim();
+    if (!text) { alert('Cole um texto primeiro!'); return; }
+
+    const btn = document.getElementById('run');
+    const card = document.getElementById('result-card');
+    const resultEl = document.getElementById('result-text');
+
+    btn.disabled = true;
+    card.style.display = 'block';
+    resultEl.innerHTML = '<div class="loading">Processando <div class="dots"><span></span><span></span><span></span></div></div>';
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{
+            role: "user",
+            content: `${prompts[selected]}\n\nTexto:\n${text}`
+          }]
+        })
+      });
+
+      const data = await res.json();
+      const output = data.content?.map(b => b.text || '').join('') || "Erro ao processar.";
+      resultEl.textContent = output;
+    } catch (e) {
+      resultEl.textContent = "Ocorreu um erro. Tente novamente.";
+    }
+
+    btn.disabled = false;
+  }
+
+  function copy() {
+    const t = document.getElementById('result-text').textContent;
+    navigator.clipboard.writeText(t).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    });
+  }
+</script>
+</body>
+</html>
